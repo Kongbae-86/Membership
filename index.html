@@ -475,7 +475,7 @@ function renderByPerson() {
       <div class="person-row-item">
         <span class="person-brand">${m.name}</span>
         <div style="display:flex;align-items:center;gap:6px;">
-          <span class="person-points">${Number(m.points).toLocaleString()}</span>
+          <span class="person-points">${m.milesDisplay || "0"}</span>
           <span class="exp-badge ${expCls(m.status)}" style="font-size:0.62rem;padding:1px 5px;">
             ${(m.status==='never'||m.status==='unknown')?(m.expireDateDisplay||'N/A'):m.expireDateDisplay||'—'}
           </span>
