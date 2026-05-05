@@ -425,37 +425,40 @@ function renderBrandCard(brand) {
 }
 
 function renderMemberRow(m) {
+  const si  = m.sheetRowIndex;
+  const off = m.offset || 1;
   const expCls = {
     expired:'exp-expired', warn:'exp-warn',
     ok:'exp-ok', good:'exp-good', never:'exp-never'
   }[m.status] || 'exp-never';
   const expLabel = m.status === 'expired' ? 'EXPIRED ⚠' :
                    m.status === 'never'   ? 'Never' :
-                   m.expireDateDisplay || '—';
+                   m.expireDateDisplay    || '—';
 
   return `
-    <div class="member-row" id="mr-${m.sheetRowIndex}">
+    <div class="member-row" id="mr-${si}">
       <div class="mr-person">
         <span class="person-tag tag-${m.person}" style="font-size:0.68rem;">${m.person}</span>
       </div>
       <div class="mr-field">
         <div class="mr-label">Points / Miles</div>
         <input class="mr-edit" value="${esc(m.pointsDisplay)}"
-               onblur="saveField(${m.sheetRowIndex},'points',this.value,this,${m.offset})">
+               onblur="saveField(${si},'points',this.value,this,${off})">
       </div>
       <div class="mr-field">
         <div class="mr-label">Last Activity</div>
-        <input class="mr-edit" value="${esc(m.activity)}" placeholder="MM/DD/YYYY"
-               maxlength="10" oninput="autoSlash(this)"
-               onblur="saveField(${m.sheetRowIndex},'activity',this.value,this,${m.offset})">
+        <input class="mr-edit act-input-${si}" value="${esc(m.activity)}"
+               placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)"
+               onblur="saveField(${si},'activity',this.value,this,${off})">
       </div>
       <div class="mr-field">
         <div class="mr-label">Expires</div>
         <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
-          <span class="exp-badge ${expCls}" id="exp-${m.sheetRowIndex}">${expLabel}</span>
-          <input class="mr-edit" style="width:90px;" value="${esc(m.expireDate)}"
+          <span class="exp-badge ${expCls}" id="exp-${si}">${expLabel}</span>
+          <input class="mr-edit exp-input-${si}" style="width:90px;"
+                 value="${esc(m.expireDate)}"
                  placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)"
-                 onblur="saveField(${m.sheetRowIndex},'expireDate',this.value,this,${m.offset})">
+                 onblur="saveField(${si},'expireDate',this.value,this,${off})">
         </div>
       </div>
     </div>`;
