@@ -83,11 +83,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);m
 .mr-edit:focus{background:white;box-shadow:0 0 0 2px var(--orange);}
 
 /* ── MEMBER ID FOOTER ── */
-.m-card-footer{margin-top:10px;padding-top:8px;border-top:1px solid var(--border-2);font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--ink-4);display:flex;flex-wrap:wrap;gap:8px;}
-.id-item{display:flex;gap:4px;align-items:center;}
-.id-person{font-weight:600;}
-.id-edit{background:transparent;border:none;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--ink-4);padding:0 2px;border-radius:2px;outline:none;min-width:80px;}
-.id-edit:focus{background:white;box-shadow:0 0 0 1.5px var(--orange);color:var(--ink);}
+.m-card-footer{margin-top:10px;padding-top:8px;border-top:1px solid var(--border-2);font-family:'DM Sans',sans-serif;font-size:0.82rem;display:flex;flex-wrap:wrap;gap:10px;}
+.id-item{display:flex;gap:6px;align-items:center;}
+.id-person{font-weight:600;font-size:0.82rem;}
+.id-edit{background:transparent;border:none;font-family:'DM Mono',monospace;font-size:0.82rem;color:var(--ink-2);padding:1px 4px;border-radius:3px;outline:none;min-width:90px;}
+.id-edit:focus{background:white;box-shadow:0 0 0 2px var(--orange);color:var(--ink);}
 
 /* ── EXPIRY BADGES ── */
 .exp-badge{display:inline-flex;align-items:center;border-radius:4px;padding:2px 7px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
@@ -204,7 +204,7 @@ select.form-input{cursor:pointer;appearance:none;background:var(--paper-2) url("
     </div>
     <div class="form-row">
       <label class="form-label">Last Activity (MM/DD/YYYY)</label>
-      <input class="form-input" type="text" id="add-activity" placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)">
+      <input class="form-input" type="text" id="add-activity" placeholder="MM/DD/YYYY" maxlength="10">
     </div>
     <div class="form-row">
       <label class="form-label">Expire (months or "never")</label>
@@ -212,7 +212,7 @@ select.form-input{cursor:pointer;appearance:none;background:var(--paper-2) url("
     </div>
     <div class="form-row">
       <label class="form-label">Expire Date (MM/DD/YYYY)</label>
-      <input class="form-input" type="text" id="add-expire-date" placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)">
+      <input class="form-input" type="text" id="add-expire-date" placeholder="MM/DD/YYYY" maxlength="10">
     </div>
     <div class="form-row">
       <label class="form-label">Member ID</label>
@@ -407,7 +407,7 @@ function renderBrandCard(brand) {
     .filter(m => m.memberId && m.person !== 'Pool')
     .map(m => `
       <div class="id-item">
-        <span class="id-person">${m.person}:</span>
+        <span class="person-tag tag-${m.person}" style="font-size:0.75rem;">${m.person}</span>
         <input class="id-edit" value="${esc(m.memberId)}"
                onblur="saveField(${m.sheetRow},'memberId',this.value)">
       </div>`)
@@ -426,8 +426,10 @@ function renderBrandCard(brand) {
 
 function renderMemberRow(m) {
   const si = m.sheetRow;
-  const expCls = {expired:'exp-expired',warn:'exp-warn',ok:'exp-ok',good:'exp-good',never:'exp-never'}[m.status] || 'exp-never';
-  const expLabel = m.status === 'expired' ? 'EXPIRED ⚠' : m.status === 'never' ? 'Never' : (m.expireDateDisplay || '—');
+  const expCls = {expired:'exp-expired',warn:'exp-warn',ok:'exp-ok',good:'exp-good',never:'exp-never',unknown:'exp-never'}[m.status] || 'exp-never';
+  const expLabel = m.status === 'expired' ? 'EXPIRED ⚠'
+                 : (m.status === 'never' || m.status === 'unknown') ? (m.expireDateDisplay || 'N/A')
+                 : (m.expireDateDisplay || '—');
   return `
     <div class="member-row" id="mr-${si}">
       <div class="mr-person">
@@ -441,7 +443,7 @@ function renderMemberRow(m) {
       <div class="mr-field">
         <div class="mr-label">Last Activity</div>
         <input class="mr-edit" id="act-${si}" value="${esc(m.activity)}"
-               placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)"
+               placeholder="MM/DD/YYYY" maxlength="10"
                onblur="saveField(${si},'activity',this.value)">
       </div>
       <div class="mr-field">
@@ -450,7 +452,7 @@ function renderMemberRow(m) {
           <span class="exp-badge ${expCls}" id="exp-${si}">${expLabel}</span>
           <input class="mr-edit" id="expdt-${si}" style="width:90px;"
                  value="${esc(m.expireDate)}"
-                 placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)"
+                 placeholder="MM/DD/YYYY" maxlength="10"
                  onblur="saveField(${si},'expireDate',this.value)">
         </div>
       </div>
@@ -475,7 +477,7 @@ function renderByPerson() {
         <div style="display:flex;align-items:center;gap:6px;">
           <span class="person-points">${Number(m.points).toLocaleString()}</span>
           <span class="exp-badge ${expCls(m.status)}" style="font-size:0.62rem;padding:1px 5px;">
-            ${m.status==='never'?'Never':m.expireDateDisplay||'—'}
+            ${(m.status==='never'||m.status==='unknown')?(m.expireDateDisplay||'N/A'):m.expireDateDisplay||'—'}
           </span>
         </div>
       </div>`).join('');
@@ -565,12 +567,7 @@ function groupByBrand(list) {
   return order.map(n => map[n]);
 }
 
-function autoSlash(input) {
-  let v = input.value.replace(/\D/g,'').slice(0,8);
-  if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
-  if (v.length >= 6) v = v.slice(0,5) + '/' + v.slice(5);
-  input.value = v;
-}
+// autoSlash removed — users type dates freely in MM/DD/YYYY format
 
 function esc(str) {
   if (!str) return '';
