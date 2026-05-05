@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f5f0e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Membership</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#faf7f2; --paper-2:#f5f0e8; --paper-3:#ede6d8; --paper-4:#e2d9c8;
+  --ink:#1a1714; --ink-2:#3d3730; --ink-3:#6b6157; --ink-4:#9e9389;
+  --orange:#d4570a; --orange-2:#e8691a; --orange-light:#fde8d8; --orange-mid:#f5c4a0;
+  --green:#2d6a4f; --green-light:#d8f0e5;
+  --red:#b91c1c; --red-light:#fde8e8;
+  --blue:#1d4e89; --blue-light:#dbeafe;
+  --purple:#7c3aed; --purple-light:#ede9fe;
+  --amber:#92400e; --amber-light:#fef3c7;
+  --teal:#0f766e; --teal-light:#ccfbf1;
+  --border:#d6cdc0; --border-2:#e8e0d4;
+  --shadow-sm:0 1px 3px rgba(26,23,20,0.08);
+  --shadow:0 2px 8px rgba(26,23,20,0.10);
+  --shadow-lg:0 4px 20px rgba(26,23,20,0.14);
+  --radius:10px; --radius-sm:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;font-size:14px;}
+
+/* ── HEADER ── */
+.app-header{background:var(--paper-2);border-bottom:1.5px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm);}
+.hdr-row1{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:44px;border-bottom:1px solid var(--border-2);}
+.hdr-row2{max-width:900px;margin:0 auto;padding:4px 10px;}
+.app-logo{font-family:'Lora',serif;font-size:1.05rem;font-weight:600;display:flex;align-items:center;gap:7px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--orange);}
+.tab-bar{display:flex;gap:2px;background:var(--paper-3);border-radius:8px;padding:3px;}
+.htab{flex:1;text-align:center;padding:5px 8px;border-radius:6px;font-size:0.80rem;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--ink-3);transition:all 0.15s;white-space:nowrap;}
+.htab.active{background:var(--paper);color:var(--ink);box-shadow:var(--shadow-sm);}
+.htab:hover:not(.active){background:var(--paper-4);color:var(--ink);}
+.btn-settings{background:transparent;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:0.76rem;color:var(--ink-3);cursor:pointer;}
+.btn-settings:hover{background:var(--paper-3);}
+
+/* ── MAIN ── */
+.main{max-width:900px;margin:0 auto;padding:16px 14px 60px;}
+
+/* ── FILTER CHIPS ── */
+.filter-bar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.filter-label{font-size:0.68rem;color:var(--ink-4);margin-right:2px;}
+.chip{font-size:0.72rem;padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--paper-2);color:var(--ink-3);cursor:pointer;transition:all 0.15s;font-weight:500;}
+.chip.on{background:var(--orange);color:white;border-color:var(--orange);}
+.chip:hover:not(.on){background:var(--paper-3);color:var(--ink);}
+
+/* ── WARNING BANNER ── */
+.warn-banner{background:var(--amber-light);border:1.5px solid #f5d596;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.78rem;color:var(--amber);display:flex;align-items:flex-start;gap:8px;}
+.warn-banner ul{margin:4px 0 0 14px;}
+.warn-banner li{margin-bottom:2px;}
+
+/* ── SECTION TITLE ── */
+.section-title{font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-4);margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border-2);}
+
+/* ── MEMBERSHIP CARD ── */
+.m-card{background:var(--paper-2);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow-sm);}
+.m-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.m-brand{font-family:'Lora',serif;font-size:1.05rem;font-weight:600;color:var(--ink);}
+.m-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.person-tag{font-size:0.62rem;padding:2px 8px;border-radius:3px;font-weight:600;white-space:nowrap;}
+.tag-Justin{background:var(--blue-light);color:var(--blue);}
+.tag-EJ{background:var(--purple-light);color:var(--purple);}
+.tag-Adeline{background:var(--teal-light);color:var(--teal);}
+.tag-Adney{background:var(--green-light);color:var(--green);}
+.tag-Pool{background:var(--paper-3);color:var(--ink-3);}
+
+/* ── MEMBER ROWS ── */
+.member-rows{display:flex;flex-direction:column;gap:8px;}
+.member-row{display:grid;grid-template-columns:70px 1fr 1fr 1fr;gap:8px;align-items:center;padding:8px 10px;background:var(--paper);border-radius:6px;border:1px solid var(--border-2);}
+.mr-person{font-size:0.75rem;font-weight:600;color:var(--ink-3);}
+.mr-field{display:flex;flex-direction:column;gap:1px;}
+.mr-label{font-size:0.58rem;color:var(--ink-4);text-transform:uppercase;letter-spacing:0.05em;}
+.mr-value{font-family:'DM Mono',monospace;font-size:0.80rem;color:var(--ink-2);}
+.mr-edit{background:transparent;border:none;font-family:'DM Mono',monospace;font-size:0.80rem;color:var(--ink);padding:1px 4px;border-radius:3px;outline:none;width:100%;}
+.mr-edit:focus{background:white;box-shadow:0 0 0 2px var(--orange);}
+
+/* ── MEMBER ID FOOTER ── */
+.m-card-footer{margin-top:10px;padding-top:8px;border-top:1px solid var(--border-2);font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--ink-4);display:flex;flex-wrap:wrap;gap:8px;}
+.id-item{display:flex;gap:4px;align-items:center;}
+.id-person{font-weight:600;}
+.id-edit{background:transparent;border:none;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--ink-4);padding:0 2px;border-radius:2px;outline:none;min-width:80px;}
+.id-edit:focus{background:white;box-shadow:0 0 0 1.5px var(--orange);color:var(--ink);}
+
+/* ── EXPIRY BADGES ── */
+.exp-badge{display:inline-flex;align-items:center;border-radius:4px;padding:2px 7px;font-size:0.68rem;font-weight:600;white-space:nowrap;}
+.exp-good{background:var(--green-light);color:var(--green);}
+.exp-ok{background:#ecfdf5;color:#059669;}
+.exp-warn{background:var(--amber-light);color:var(--amber);}
+.exp-expired{background:var(--red-light);color:var(--red);}
+.exp-never{background:var(--paper-3);color:var(--ink-4);}
+
+/* ── PERSON TAB ── */
+.person-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.person-grid{grid-template-columns:1fr;}}
+.person-section{background:var(--paper-2);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow-sm);}
+.person-name{font-family:'Lora',serif;font-size:1rem;font-weight:600;margin-bottom:10px;}
+.person-row-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border-2);font-size:0.78rem;}
+.person-row-item:last-child{border-bottom:none;}
+.person-brand{color:var(--ink-3);}
+.person-points{font-family:'DM Mono',monospace;font-weight:500;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--radius-sm);font-size:0.78rem;font-weight:500;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.btn-primary{background:var(--orange);color:white;border-color:var(--orange);}
+.btn-primary:hover{background:var(--orange-2);}
+.btn-ghost{background:transparent;color:var(--ink-3);border-color:var(--border-2);}
+.btn-ghost:hover{background:var(--paper-2);color:var(--ink);}
+.btn-sm{padding:3px 8px;font-size:0.72rem;}
+.btn-danger{background:var(--red-light);color:var(--red);border-color:#fca5a5;}
+
+/* ── MODALS ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,23,20,0.5);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--paper);border:1.5px solid var(--border);border-radius:12px;padding:24px;max-width:380px;width:100%;box-shadow:var(--shadow-lg);transform:translateY(8px);transition:transform 0.2s;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-title{font-family:'Lora',serif;font-size:1rem;font-weight:600;margin-bottom:14px;}
+.form-row{margin-bottom:10px;}
+.form-label{font-size:0.72rem;color:var(--ink-3);font-weight:600;margin-bottom:3px;display:block;}
+.form-input{width:100%;font-family:'DM Mono',monospace;font-size:0.82rem;border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;outline:none;background:var(--paper-2);}
+.form-input:focus{border-color:var(--orange);background:white;}
+select.form-input{cursor:pointer;appearance:none;background:var(--paper-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6157'/%3E%3C/svg%3E") no-repeat right 8px center;}
+
+/* ── SETUP / LOADING ── */
+.setup-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:30px;}
+.setup-screen .icon{font-size:2.5rem;margin-bottom:14px;}
+.setup-screen h2{font-family:'Lora',serif;font-size:1.2rem;font-weight:600;margin-bottom:8px;}
+.setup-screen p{color:var(--ink-3);font-size:0.84rem;max-width:360px;margin-bottom:18px;}
+.setup-input{font-family:'DM Mono',monospace;font-size:0.78rem;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;width:100%;max-width:420px;outline:none;background:var(--paper-2);margin-bottom:12px;}
+.setup-input:focus{border-color:var(--orange);background:white;}
+.loading-state{display:flex;flex-direction:column;align-items:center;gap:12px;padding:60px 20px;color:var(--ink-4);}
+.spinner{width:26px;height:26px;border:2.5px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:white;padding:10px 18px;border-radius:8px;font-size:0.82rem;box-shadow:var(--shadow-lg);z-index:300;transform:translateY(60px);opacity:0;transition:all 0.25s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:var(--green);}
+.toast.error{background:var(--red);}
+
+/* ── MOBILE ── */
+@media(max-width:600px){
+  .member-row{grid-template-columns:60px 1fr 1fr;gap:6px;}
+  .mr-field:nth-child(4){display:none;}
+}
+.fade-in{animation:fadeIn 0.25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="hdr-row1">
+    <div class="app-logo"><div class="dot"></div> Membership</div>
+    <button class="btn-settings" onclick="openSettings()">⚙ Settings</button>
+  </div>
+  <div class="hdr-row2">
+    <div class="tab-bar">
+      <button class="htab active" onclick="switchTab('hotels')">🏨 Hotels</button>
+      <button class="htab" onclick="switchTab('airlines')">✈️ Airlines</button>
+      <button class="htab" onclick="switchTab('person')">👥 By Person</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div id="tab-hotels"><div class="loading-state"><div class="spinner"></div><span>Loading…</span></div></div>
+  <div id="tab-airlines" style="display:none;"></div>
+  <div id="tab-person" style="display:none;"></div>
+</main>
+
+<!-- ADD MEMBERSHIP MODAL -->
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-title">Add Membership</div>
+    <div class="form-row">
+      <label class="form-label">Category</label>
+      <select class="form-input" id="add-category">
+        <option value="Hotel">Hotel</option>
+        <option value="Airline">Airline</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Brand (e.g. IHG, United)</label>
+      <input class="form-input" type="text" id="add-name" placeholder="IHG">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Person</label>
+      <select class="form-input" id="add-person">
+        <option>Justin</option><option>EJ</option>
+        <option>Adeline</option><option>Adney</option><option>Pool</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Points / Miles</label>
+      <input class="form-input" type="text" id="add-points" placeholder="0">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Last Activity (MM/DD/YYYY)</label>
+      <input class="form-input" type="text" id="add-activity" placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Expire (months or "never")</label>
+      <input class="form-input" type="text" id="add-expire-mo" placeholder="12 or never">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Expire Date (MM/DD/YYYY)</label>
+      <input class="form-input" type="text" id="add-expire-date" placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Member ID</label>
+      <input class="form-input" type="text" id="add-member-id" placeholder="Member ID">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px;">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('add-modal')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="submitAdd()">✓ Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal">
+    <div class="modal-title">⚙ Settings</div>
+    <p style="font-size:0.75rem;color:var(--ink-3);margin-bottom:12px;">GAS Web App URL — stored locally on this device only.</p>
+    <div class="form-row">
+      <label class="form-label">GAS Web App URL</label>
+      <input class="form-input" type="password" id="settings-url" placeholder="https://script.google.com/macros/s/…">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px;">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('settings-modal')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="saveSettings()">✓ Save & Reconnect</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────
+let GAS_URL   = localStorage.getItem('membershipGasUrl') || '';
+let hotels    = [];
+let airlines  = [];
+let warnings  = [];
+let activeTab = 'hotels';
+let activePerson = 'All';
+
+// ── INIT ────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  if (!GAS_URL) showSetup();
+  else loadAll();
+});
+
+function showSetup() {
+  document.getElementById('tab-hotels').innerHTML = `
+    <div class="setup-screen fade-in">
+      <div class="icon">🔑</div>
+      <h2>Connect to Google Sheets</h2>
+      <p>Enter your Google Apps Script Web App URL. Stored only on this device.</p>
+      <input class="setup-input" type="password" id="setup-url"
+             placeholder="https://script.google.com/macros/s/…"
+             onkeydown="if(event.key==='Enter') saveSetup()">
+      <button class="btn btn-primary" onclick="saveSetup()">Connect →</button>
+    </div>`;
+}
+
+function saveSetup() {
+  const val = (document.getElementById('setup-url').value||'').trim();
+  if (!val.startsWith('https://script.google.com')) {
+    showToast('Invalid GAS URL','error'); return;
+  }
+  GAS_URL = val;
+  localStorage.setItem('membershipGasUrl', GAS_URL);
+  document.getElementById('tab-hotels').innerHTML =
+    '<div class="loading-state"><div class="spinner"></div><span>Connecting…</span></div>';
+  loadAll();
+}
+
+// ── LOAD ────────────────────────────────────────────────────
+async function loadAll() {
+  try {
+    const res = await gasPost('getAllMemberships', {});
+    hotels   = res.hotels   || [];
+    airlines = res.airlines || [];
+    warnings = res.warnings || [];
+    renderAll();
+  } catch(e) {
+    document.getElementById('tab-hotels').innerHTML = `
+      <div class="setup-screen">
+        <div class="icon">⚠️</div>
+        <h2>Connection failed</h2>
+        <p>${e.message}</p>
+        <button class="btn btn-ghost" style="margin-top:12px;" onclick="openSettings()">⚙ Settings</button>
+      </div>`;
+  }
+}
+
+function renderAll() {
+  renderHotels();
+  renderAirlines();
+  renderByPerson();
+}
+
+// ── TAB SWITCH ───────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  ['hotels','airlines','person'].forEach((t,i) => {
+    document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
+    document.querySelectorAll('.htab')[i].classList.toggle('active', t === tab);
+  });
+}
+
+// ── FILTER CHIPS ─────────────────────────────────────────────
+function renderFilterBar(containerId) {
+  const people = ['All','Justin','EJ','Adeline','Adney'];
+  return `<div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    ${people.map(p => `
+      <div class="chip ${activePerson===p?'on':''}"
+           onclick="setPersonFilter('${p}','${containerId}')">${p}</div>
+    `).join('')}
+    <button class="btn btn-primary btn-sm" style="margin-left:auto;"
+            onclick="document.getElementById('add-modal').classList.add('open')">+ Add</button>
+  </div>`;
+}
+
+function setPersonFilter(person, containerId) {
+  activePerson = person;
+  renderAll();
+  // Keep on same tab
+  switchTab(activeTab);
+}
+
+// ── WARNINGS BANNER ──────────────────────────────────────────
+function renderWarnings() {
+  const filtered = warnings.filter(m =>
+    activePerson === 'All' || m.person === activePerson
+  );
+  if (filtered.length === 0) return '';
+  const items = filtered.map(m =>
+    `<li><strong>${m.name}</strong> (${m.person}) — ${
+      m.status === 'expired' ? 'EXPIRED' : 'expires ' + m.expireDateDisplay
+    }</li>`
+  ).join('');
+  return `<div class="warn-banner">⚠️ <div>
+    <strong>${filtered.length} membership${filtered.length>1?'s':''} expiring within 3 months</strong>
+    <ul>${items}</ul>
+  </div></div>`;
+}
+
+// ── RENDER HOTELS ────────────────────────────────────────────
+function renderHotels() {
+  const el = document.getElementById('tab-hotels');
+  const filtered = filterByPerson(hotels);
+  const brands   = groupByBrand(filtered);
+
+  let html = renderFilterBar('tab-hotels') + renderWarnings();
+  html += '<div class="section-title">🏨 Hotels</div>';
+
+  if (brands.length === 0) {
+    html += '<div style="color:var(--ink-4);padding:20px;text-align:center;">No hotel memberships found.</div>';
+  } else {
+    brands.forEach(brand => {
+      html += renderBrandCard(brand);
+    });
+  }
+  el.innerHTML = html;
+}
+
+// ── RENDER AIRLINES ──────────────────────────────────────────
+function renderAirlines() {
+  const el = document.getElementById('tab-airlines');
+  const filtered = filterByPerson(airlines);
+  const brands   = groupByBrand(filtered);
+
+  let html = renderFilterBar('tab-airlines') + renderWarnings();
+  html += '<div class="section-title">✈️ Airlines</div>';
+
+  if (brands.length === 0) {
+    html += '<div style="color:var(--ink-4);padding:20px;text-align:center;">No airline memberships found.</div>';
+  } else {
+    brands.forEach(brand => {
+      html += renderBrandCard(brand);
+    });
+  }
+  el.innerHTML = html;
+}
+
+// ── BRAND CARD ───────────────────────────────────────────────
+function renderBrandCard(brand) {
+  const tags = brand.members.map(m =>
+    `<span class="person-tag tag-${m.person}">${m.person}</span>`
+  ).join('');
+
+  const rows = brand.members.map(m => renderMemberRow(m)).join('');
+
+  const idFooter = brand.members
+    .filter(m => m.memberId && m.person !== 'Pool')
+    .map(m => `
+      <div class="id-item">
+        <span class="id-person">${m.person}:</span>
+        <input class="id-edit" value="${esc(m.memberId)}"
+               onblur="saveField(${m.rowIndex},'memberId',this.value,this)">
+      </div>`)
+    .join('');
+
+  return `
+    <div class="m-card fade-in">
+      <div class="m-card-top">
+        <div class="m-brand">${brand.name}</div>
+        <div class="m-tags">${tags}</div>
+      </div>
+      <div class="member-rows">${rows}</div>
+      ${idFooter ? `<div class="m-card-footer">${idFooter}</div>` : ''}
+    </div>`;
+}
+
+function renderMemberRow(m) {
+  const expCls = {
+    expired:'exp-expired', warn:'exp-warn',
+    ok:'exp-ok', good:'exp-good', never:'exp-never'
+  }[m.status] || 'exp-never';
+  const expLabel = m.status === 'expired' ? 'EXPIRED ⚠' :
+                   m.status === 'never'   ? 'Never' :
+                   m.expireDateDisplay || '—';
+
+  return `
+    <div class="member-row" id="mr-${m.rowIndex}">
+      <div class="mr-person">
+        <span class="person-tag tag-${m.person}" style="font-size:0.68rem;">${m.person}</span>
+      </div>
+      <div class="mr-field">
+        <div class="mr-label">Points / Miles</div>
+        <input class="mr-edit" value="${esc(m.pointsRaw)}"
+               onblur="saveField(${m.rowIndex},'points',this.value,this)">
+      </div>
+      <div class="mr-field">
+        <div class="mr-label">Last Activity</div>
+        <input class="mr-edit" value="${esc(m.activity)}" placeholder="MM/DD/YYYY"
+               maxlength="10" oninput="autoSlash(this)"
+               onblur="saveField(${m.rowIndex},'activity',this.value,this)">
+      </div>
+      <div class="mr-field">
+        <div class="mr-label">Expires</div>
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+          <span class="exp-badge ${expCls}" id="exp-${m.rowIndex}">${expLabel}</span>
+          <input class="mr-edit" style="width:90px;" value="${esc(m.expireDate)}"
+                 placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)"
+                 onblur="saveField(${m.rowIndex},'expireDate',this.value,this)">
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── RENDER BY PERSON ─────────────────────────────────────────
+function renderByPerson() {
+  const el = document.getElementById('tab-person');
+  const people = ['Justin','EJ','Adeline','Adney'];
+  const all    = [...hotels, ...airlines];
+
+  let html = '<div class="person-grid fade-in">';
+  people.forEach(person => {
+    const items = all.filter(m => m.person === person);
+    if (items.length === 0) return;
+
+    const expCls = s => ({expired:'exp-expired',warn:'exp-warn',ok:'exp-ok',good:'exp-good',never:'exp-never'}[s]||'exp-never');
+    const rows = items.map(m => `
+      <div class="person-row-item">
+        <span class="person-brand">${m.name}</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="person-points">${Number(m.points).toLocaleString()}</span>
+          <span class="exp-badge ${expCls(m.status)}" style="font-size:0.62rem;padding:1px 5px;">
+            ${m.status==='never'?'Never':m.expireDateDisplay||'—'}
+          </span>
+        </div>
+      </div>`).join('');
+
+    const tagCls = `tag-${person}`;
+    html += `
+      <div class="person-section">
+        <div class="person-name">
+          <span class="person-tag ${tagCls}" style="font-size:0.75rem;padding:3px 10px;">${person}</span>
+        </div>
+        ${rows}
+      </div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ── SAVE FIELD ───────────────────────────────────────────────
+async function saveField(rowIndex, field, value, inputEl) {
+  try {
+    const res = await gasPost('updateMembership', { rowIndex, field, value });
+    if (res.error) { showToast(res.error, 'error'); return; }
+
+    // Update expiry badge if expireDate changed
+    if (field === 'expireDate' || field === 'activity') {
+      const badge = document.getElementById('exp-' + rowIndex);
+      if (badge) {
+        badge.className = 'exp-badge ' + ({
+          expired:'exp-expired', warn:'exp-warn',
+          ok:'exp-ok', good:'exp-good', never:'exp-never'
+        }[res.status] || 'exp-never');
+        badge.textContent = res.status === 'expired' ? 'EXPIRED ⚠' :
+                            res.status === 'never'   ? 'Never' :
+                            res.expireDateDisplay || '—';
+      }
+      // Refresh warnings
+      await loadAll();
+    }
+  } catch(e) { showToast('Save failed: ' + e.message, 'error'); }
+}
+
+// ── ADD MEMBERSHIP ───────────────────────────────────────────
+async function submitAdd() {
+  const payload = {
+    category:   document.getElementById('add-category').value,
+    name:       document.getElementById('add-name').value.trim(),
+    person:     document.getElementById('add-person').value,
+    points:     document.getElementById('add-points').value.trim() || '0',
+    activity:   document.getElementById('add-activity').value.trim(),
+    expireMo:   document.getElementById('add-expire-mo').value.trim(),
+    expireDate: document.getElementById('add-expire-date').value.trim(),
+    memberId:   document.getElementById('add-member-id').value.trim()
+  };
+  if (!payload.name) { showToast('Please enter a brand name','error'); return; }
+  const res = await gasPost('addMembership', payload);
+  if (res.error) { showToast(res.error,'error'); return; }
+  closeModal('add-modal');
+  showToast('Membership added','success');
+  loadAll();
+}
+
+// ── HELPERS ──────────────────────────────────────────────────
+function filterByPerson(list) {
+  if (activePerson === 'All') return list;
+  return list.filter(m => m.person === activePerson);
+}
+
+function groupByBrand(list) {
+  const map = {};
+  const order = [];
+  list.forEach(m => {
+    if (!map[m.name]) { map[m.name] = { name: m.name, members: [] }; order.push(m.name); }
+    map[m.name].members.push(m);
+  });
+  return order.map(n => map[n]);
+}
+
+function autoSlash(input) {
+  let v = input.value.replace(/\D/g,'').slice(0,8);
+  if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+  if (v.length >= 6) v = v.slice(0,5) + '/' + v.slice(5);
+  input.value = v;
+}
+
+function esc(str) {
+  if (!str) return '';
+  return str.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;')
+            .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── SETTINGS ────────────────────────────────────────────────
+function openSettings() {
+  document.getElementById('settings-url').value = GAS_URL;
+  document.getElementById('settings-modal').classList.add('open');
+}
+function saveSettings() {
+  const val = (document.getElementById('settings-url').value||'').trim();
+  if (!val.startsWith('https://script.google.com')) {
+    showToast('Invalid GAS URL','error'); return;
+  }
+  GAS_URL = val;
+  localStorage.setItem('membershipGasUrl', GAS_URL);
+  closeModal('settings-modal');
+  showToast('Saved — reconnecting…','success');
+  loadAll();
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+['add-modal','settings-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(e) {
+    if (e.target === this) closeModal(id);
+  });
+});
+
+// ── GAS API ─────────────────────────────────────────────────
+async function gasPost(action, payload) {
+  if (!GAS_URL) throw new Error('GAS URL not configured');
+  const res = await fetch(GAS_URL, {
+    method:'POST',
+    body: JSON.stringify({ action, payload }),
+    headers:{ 'Content-Type':'text/plain' }
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type?' '+type:'');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
