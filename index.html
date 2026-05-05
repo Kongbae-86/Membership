@@ -349,7 +349,7 @@ function renderWarnings() {
       m.status === 'expired' ? 'EXPIRED' : 'expires ' + m.expireDateDisplay
     }</li>`
   ).join('');
-  return `<div class="warn-banner">⚠️ <div>
+  return `<div class="warn-banner" id="warn-banner">⚠️ <div>
     <strong>${filtered.length} membership${filtered.length>1?'s':''} expiring within 3 months</strong>
     <ul>${items}</ul>
   </div></div>`;
@@ -425,40 +425,33 @@ function renderBrandCard(brand) {
 }
 
 function renderMemberRow(m) {
-  const si  = m.sheetRowIndex;
-  const off = m.offset || 1;
-  const expCls = {
-    expired:'exp-expired', warn:'exp-warn',
-    ok:'exp-ok', good:'exp-good', never:'exp-never'
-  }[m.status] || 'exp-never';
-  const expLabel = m.status === 'expired' ? 'EXPIRED ⚠' :
-                   m.status === 'never'   ? 'Never' :
-                   m.expireDateDisplay    || '—';
-
+  const si = m.sheetRow;
+  const expCls = {expired:'exp-expired',warn:'exp-warn',ok:'exp-ok',good:'exp-good',never:'exp-never'}[m.status] || 'exp-never';
+  const expLabel = m.status === 'expired' ? 'EXPIRED ⚠' : m.status === 'never' ? 'Never' : (m.expireDateDisplay || '—');
   return `
     <div class="member-row" id="mr-${si}">
       <div class="mr-person">
         <span class="person-tag tag-${m.person}" style="font-size:0.68rem;">${m.person}</span>
       </div>
       <div class="mr-field">
-        <div class="mr-label">Points / Miles</div>
-        <input class="mr-edit" value="${esc(m.pointsDisplay)}"
-               onblur="saveField(${si},'points',this.value,this,${off})">
+        <div class="mr-label">Miles / Points</div>
+        <input class="mr-edit" value="${esc(m.milesDisplay)}"
+               onblur="saveField(${si},'miles',this.value)">
       </div>
       <div class="mr-field">
         <div class="mr-label">Last Activity</div>
-        <input class="mr-edit act-input-${si}" value="${esc(m.activity)}"
+        <input class="mr-edit" id="act-${si}" value="${esc(m.activity)}"
                placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)"
-               onblur="saveField(${si},'activity',this.value,this,${off})">
+               onblur="saveField(${si},'activity',this.value)">
       </div>
       <div class="mr-field">
         <div class="mr-label">Expires</div>
         <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
           <span class="exp-badge ${expCls}" id="exp-${si}">${expLabel}</span>
-          <input class="mr-edit exp-input-${si}" style="width:90px;"
+          <input class="mr-edit" id="expdt-${si}" style="width:90px;"
                  value="${esc(m.expireDate)}"
                  placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)"
-                 onblur="saveField(${si},'expireDate',this.value,this,${off})">
+                 onblur="saveField(${si},'expireDate',this.value)">
         </div>
       </div>
     </div>`;
