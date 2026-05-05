@@ -395,9 +395,11 @@ function renderAirlines() {
 
 // ── BRAND CARD ───────────────────────────────────────────────
 function renderBrandCard(brand) {
-  const tags = brand.members.map(m =>
-    `<span class="person-tag tag-${m.person}">${m.person}</span>`
-  ).join('');
+  const knownPeople = ['Justin','EJ','Adeline','Adney','Pool'];
+  const tags = brand.members
+    .filter(m => knownPeople.includes(m.person))
+    .map(m => `<span class="person-tag tag-${m.person}">${m.person}</span>`)
+    .join('');
 
   const rows = brand.members.map(m => renderMemberRow(m)).join('');
 
@@ -407,7 +409,7 @@ function renderBrandCard(brand) {
       <div class="id-item">
         <span class="id-person">${m.person}:</span>
         <input class="id-edit" value="${esc(m.memberId)}"
-               onblur="saveField(${m.rowIndex},'memberId',this.value,this)">
+               onblur="saveField(${m.sheetRowIndex},'memberId',this.value,this,${m.offset})">
       </div>`)
     .join('');
 
@@ -432,28 +434,28 @@ function renderMemberRow(m) {
                    m.expireDateDisplay || '—';
 
   return `
-    <div class="member-row" id="mr-${m.rowIndex}">
+    <div class="member-row" id="mr-${m.sheetRowIndex}">
       <div class="mr-person">
         <span class="person-tag tag-${m.person}" style="font-size:0.68rem;">${m.person}</span>
       </div>
       <div class="mr-field">
         <div class="mr-label">Points / Miles</div>
-        <input class="mr-edit" value="${esc(m.pointsRaw)}"
-               onblur="saveField(${m.rowIndex},'points',this.value,this)">
+        <input class="mr-edit" value="${esc(m.pointsDisplay)}"
+               onblur="saveField(${m.sheetRowIndex},'points',this.value,this,${m.offset})">
       </div>
       <div class="mr-field">
         <div class="mr-label">Last Activity</div>
         <input class="mr-edit" value="${esc(m.activity)}" placeholder="MM/DD/YYYY"
                maxlength="10" oninput="autoSlash(this)"
-               onblur="saveField(${m.rowIndex},'activity',this.value,this)">
+               onblur="saveField(${m.sheetRowIndex},'activity',this.value,this,${m.offset})">
       </div>
       <div class="mr-field">
         <div class="mr-label">Expires</div>
         <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
-          <span class="exp-badge ${expCls}" id="exp-${m.rowIndex}">${expLabel}</span>
+          <span class="exp-badge ${expCls}" id="exp-${m.sheetRowIndex}">${expLabel}</span>
           <input class="mr-edit" style="width:90px;" value="${esc(m.expireDate)}"
                  placeholder="MM/DD/YYYY" maxlength="10" oninput="autoSlash(this)"
-                 onblur="saveField(${m.rowIndex},'expireDate',this.value,this)">
+                 onblur="saveField(${m.sheetRowIndex},'expireDate',this.value,this,${m.offset})">
         </div>
       </div>
     </div>`;
@@ -496,9 +498,11 @@ function renderByPerson() {
 }
 
 // ── SAVE FIELD ───────────────────────────────────────────────
-async function saveField(rowIndex, field, value, inputEl) {
+async function saveField(sheetRowIndex, field, value, inputEl, offset) {
   try {
-    const res = await gasPost('updateMembership', { rowIndex, field, value });
+    const res = await gasPost('updateMembership', {
+      sheetRowIndex, field, value, offset: offset || 1
+    });
     if (res.error) { showToast(res.error, 'error'); return; }
 
     // Update expiry badge if expireDate changed
