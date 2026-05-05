@@ -409,7 +409,7 @@ function renderBrandCard(brand) {
       <div class="id-item">
         <span class="id-person">${m.person}:</span>
         <input class="id-edit" value="${esc(m.memberId)}"
-               onblur="saveField(${m.sheetRowIndex},'memberId',this.value,this,${m.offset})">
+               onblur="saveField(${m.sheetRow},'memberId',this.value)">
       </div>`)
     .join('');
 
@@ -494,28 +494,38 @@ function renderByPerson() {
 }
 
 // ── SAVE FIELD ───────────────────────────────────────────────
-async function saveField(sheetRowIndex, field, value, inputEl, offset) {
+async function saveField(sheetRow, field, value) {
   try {
     const res = await gasPost('updateMembership', {
-      sheetRowIndex, field, value, offset: offset || 1
+      sheetRow: parseInt(sheetRow), field: field, value: value
     });
     if (res.error) { showToast(res.error, 'error'); return; }
 
-    // Update expiry badge if expireDate changed
-    if (field === 'expireDate' || field === 'activity') {
-      const badge = document.getElementById('exp-' + rowIndex);
-      if (badge) {
-        badge.className = 'exp-badge ' + ({
-          expired:'exp-expired', warn:'exp-warn',
-          ok:'exp-ok', good:'exp-good', never:'exp-never'
-        }[res.status] || 'exp-never');
-        badge.textContent = res.status === 'expired' ? 'EXPIRED ⚠' :
-                            res.status === 'never'   ? 'Never' :
-                            res.expireDateDisplay || '—';
-      }
-      // Refresh warnings
-      await loadAll();
+    // Update expiry badge in-place
+    const badge = document.getElementById('exp-' + sheetRow);
+    if (badge) {
+      const cls = {expired:'exp-expired',warn:'exp-warn',ok:'exp-ok',good:'exp-good',never:'exp-never'}[res.status] || 'exp-never';
+      badge.className   = 'exp-badge ' + cls;
+      badge.textContent = res.status === 'expired' ? 'EXPIRED ⚠'
+                        : res.status === 'never'   ? 'Never'
+                        : (res.expireDateDisplay   || '—');
     }
+
+    // If activity updated, auto-fill expire date input
+    if (field === 'activity' && res.expireDate) {
+      const expInput = document.getElementById('expdt-' + sheetRow);
+      if (expInput) expInput.value = res.expireDate;
+      showToast('Expire date auto-updated to ' + (res.expireDateDisplay || res.expireDate), 'success');
+    }
+
+    // Refresh warning banner
+    if (field === 'activity' || field === 'expireDate') {
+      const r2 = await gasPost('getAllMemberships', {});
+      warnings = r2.warnings || [];
+      const warnEl = document.getElementById('warn-banner');
+      if (warnEl) warnEl.outerHTML = renderWarnings();
+    }
+
   } catch(e) { showToast('Save failed: ' + e.message, 'error'); }
 }
 
