@@ -498,6 +498,10 @@ function renderByPerson() {
 // ── SAVE FIELD ───────────────────────────────────────────────
 async function saveField(sheetRow, field, value) {
   try {
+    // Strip commas from miles/points before saving
+    if (field === 'miles' || field === 'points') {
+      value = value.toString().replace(/,/g, '');
+    }
     const res = await gasPost('updateMembership', {
       sheetRow: parseInt(sheetRow), field: field, value: value
     });
